@@ -1,0 +1,60 @@
+{
+	"name": "diabetesCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "inputblob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "diabetes.csv",
+				"container": "synapseprojectfilesystem"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "pregnancies",
+				"type": "String"
+			},
+			{
+				"name": "plasma_glucose",
+				"type": "String"
+			},
+			{
+				"name": "blood_pressure",
+				"type": "String"
+			},
+			{
+				"name": "triceps_skin_thickness",
+				"type": "String"
+			},
+			{
+				"name": "insulin",
+				"type": "String"
+			},
+			{
+				"name": "bmi",
+				"type": "String"
+			},
+			{
+				"name": "diabetes_pedigree",
+				"type": "String"
+			},
+			{
+				"name": "age",
+				"type": "String"
+			},
+			{
+				"name": "diabetes",
+				"type": "String"
+			}
+		]
+	}
+}

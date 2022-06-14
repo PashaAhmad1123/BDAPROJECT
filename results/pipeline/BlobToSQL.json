@@ -1,0 +1,174 @@
+{
+	"name": "BlobToSQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "DiabetesCSVtoSQL",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "pregnancies",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "pregnancies",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "plasma_glucose",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "plasma_glucose",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "blood_pressure",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "blood_pressure",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "triceps_skin_thickness",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "triceps_skin_thickness",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "insulin",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "insulin",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "bmi",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "bmi",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 3,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "diabetes_pedigree",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "diabetes_pedigree",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 3,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "age",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "age",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "diabetes",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "diabetes",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "diabetesCSV",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DiabetesTable2",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

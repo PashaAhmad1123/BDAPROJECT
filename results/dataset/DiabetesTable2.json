@@ -1,0 +1,64 @@
+{
+	"name": "DiabetesTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "outputblob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "pregnancies",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "plasma_glucose",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "blood_pressure",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "triceps_skin_thickness",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "insulin",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "bmi",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "diabetes_pedigree",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "age",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "diabetes",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DIABETES"
+		}
+	}
+}
