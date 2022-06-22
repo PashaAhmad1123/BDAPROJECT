@@ -1,0 +1,88 @@
+{
+	"name": "DelimitedText7",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ProjectBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "data1.csv",
+				"container": "input"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Entry_Number",
+				"type": "String"
+			},
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Make_or_Body_Type",
+				"type": "String"
+			},
+			{
+				"name": "Model_Designation",
+				"type": "String"
+			},
+			{
+				"name": "Date_of_Manufacture",
+				"type": "String"
+			},
+			{
+				"name": "Reg_No.",
+				"type": "String"
+			},
+			{
+				"name": "Odometer_Reading",
+				"type": "String"
+			},
+			{
+				"name": "Engine_No.",
+				"type": "String"
+			},
+			{
+				"name": "VIN_or_Chasis_No.",
+				"type": "String"
+			},
+			{
+				"name": "Name_of_Person",
+				"type": "String"
+			},
+			{
+				"name": "Address",
+				"type": "String"
+			},
+			{
+				"name": "Lic_or_Id_or_ABN_No.",
+				"type": "String"
+			},
+			{
+				"name": "Date_Of_Birth",
+				"type": "String"
+			},
+			{
+				"name": "Bank_Name",
+				"type": "String"
+			},
+			{
+				"name": "BSB_Acc",
+				"type": "String"
+			},
+			{
+				"name": "Amount",
+				"type": "String"
+			}
+		]
+	}
+}

@@ -1,0 +1,53 @@
+{
+	"name": "inputData",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText7",
+						"type": "DatasetReference"
+					},
+					"name": "InputFromCSV"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "Transformation"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Entry_Number as string,",
+				"          Date as string,",
+				"          Make_or_Body_Type as string,",
+				"          Model_Designation as string,",
+				"          Date_of_Manufacture as string,",
+				"          {Reg_No.} as string,",
+				"          Odometer_Reading as string,",
+				"          {Engine_No.} as string,",
+				"          {VIN_or_Chasis_No.} as string,",
+				"          Name_of_Person as string,",
+				"          Address as string,",
+				"          {Lic_or_Id_or_ABN_No.} as string,",
+				"          Date_Of_Birth as string,",
+				"          Bank_Name as string,",
+				"          BSB_Acc as string,",
+				"          Amount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> InputFromCSV",
+				"InputFromCSV derive(Amount = iifNull(Amount, \"974.8\", Amount),",
+				"          {Lic_or_Id_or_ABN_No.} = iifNull({Lic_or_Id_or_ABN_No.}, \"unknown_0\", {Lic_or_Id_or_ABN_No.}),",
+				"          client_key =  iifNull(Name_of_Person, \"unknown\", Name_of_Person) +\" \"+ {Lic_or_Id_or_ABN_No.},",
+				"          Date = iifNull(Date, \"03/01/2020\", Date) ,",
+				"          Date_of_Manufacture = iifNull(Date_of_Manufacture, \"20\", Date_of_Manufacture),",
+				"          Date_key = Date_of_Manufacture + \" \" + Date,",
+				"          Vehicle_key = Entry_Number) ~> Transformation"
+			]
+		}
+	}
+}
