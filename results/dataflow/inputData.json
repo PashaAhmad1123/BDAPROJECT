@@ -63,13 +63,13 @@
 					"name": "VehicleDim"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "FilteredNullValuess"
 				},
 				{
 					"name": "DateDim"
 				},
 				{
-					"name": "derivedColumn2"
+					"name": "FilteredNullValues"
 				},
 				{
 					"name": "FactTable"
@@ -143,7 +143,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> VehicleDim",
-				"clientDim derive(client_key = iifNull(client_key, \"unknown123456\", client_key)) ~> derivedColumn1",
+				"clientDim derive(client_key = iifNull(client_key, \"unknown123456\", client_key)) ~> FilteredNullValuess",
 				"Transformation select(mapColumn(",
 				"          Date,",
 				"          Date_of_Manufacture,",
@@ -151,7 +151,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> DateDim",
-				"DateDim derive(Date_key = iifNull(Date_key, \"unknown_date\" ,Date_key)) ~> derivedColumn2",
+				"DateDim derive(Date_key = iifNull(Date_key, \"unknown_date\" ,Date_key)) ~> FilteredNullValues",
 				"Transformation select(mapColumn(",
 				"          BSB_Acc,",
 				"          Amount,",
@@ -167,7 +167,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> sinkAllDataCSV",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"FilteredNullValuess sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['clientDim.csv'],",
 				"     skipDuplicateMapInputs: true,",
@@ -179,7 +179,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> VehicleDimCSVsink",
-				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"FilteredNullValues sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['DateDim.csv'],",
 				"     skipDuplicateMapInputs: true,",
