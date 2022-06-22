@@ -33,6 +33,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "VehicleDimCSVsink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DelimitedText12",
+						"type": "DatasetReference"
+					},
+					"name": "DateDimSinkcsv"
 				}
 			],
 			"transformations": [
@@ -50,6 +57,12 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "DateDim"
+				},
+				{
+					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
@@ -121,6 +134,14 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> VehicleDim",
 				"clientDim derive(client_key = iifNull(client_key, \"unknown123456\", client_key)) ~> derivedColumn1",
+				"Transformation select(mapColumn(",
+				"          Date,",
+				"          Date_of_Manufacture,",
+				"          Date_key",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> DateDim",
+				"DateDim derive(Date_key = iifNull(Date_key, \"unknown_date\" ,Date_key)) ~> derivedColumn2",
 				"AllDataColumnsCSV sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['allColumnsCSV.csv'],",
@@ -138,7 +159,13 @@
 				"     partitionFileNames:['VehicleDim.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> VehicleDimCSVsink"
+				"     partitionBy('hash', 1)) ~> VehicleDimCSVsink",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['DateDim.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> DateDimSinkcsv"
 			]
 		}
 	}
