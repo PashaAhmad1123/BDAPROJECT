@@ -80,7 +80,7 @@
 				"     skipDuplicateMapOutputs: true) ~> AllDataColumnsCSV",
 				"AllDataColumnsCSV sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['allColumnsCSV'],",
+				"     partitionFileNames:['allColumnsCSV.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> sinkAllDataCSV"
