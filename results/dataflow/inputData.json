@@ -12,10 +12,21 @@
 					"name": "InputFromCSV"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText8",
+						"type": "DatasetReference"
+					},
+					"name": "sinkAllDataCSV"
+				}
+			],
 			"transformations": [
 				{
 					"name": "Transformation"
+				},
+				{
+					"name": "AllDataColumnsCSV"
 				}
 			],
 			"scriptLines": [
@@ -42,11 +53,37 @@
 				"     ignoreNoFilesFound: false) ~> InputFromCSV",
 				"InputFromCSV derive(Amount = iifNull(Amount, \"974.8\", Amount),",
 				"          {Lic_or_Id_or_ABN_No.} = iifNull({Lic_or_Id_or_ABN_No.}, \"unknown_0\", {Lic_or_Id_or_ABN_No.}),",
-				"          client_key =  iifNull(Name_of_Person, \"unknown\", Name_of_Person) +\" \"+ {Lic_or_Id_or_ABN_No.},",
-				"          Date = iifNull(Date, \"03/01/2020\", Date) ,",
+				"          client_key = iifNull(Name_of_Person, \"unknown\", Name_of_Person) +\" \"+ {Lic_or_Id_or_ABN_No.},",
+				"          Date = iifNull(Date, \"03/01/2020\", Date),",
 				"          Date_of_Manufacture = iifNull(Date_of_Manufacture, \"20\", Date_of_Manufacture),",
 				"          Date_key = Date_of_Manufacture + \" \" + Date,",
-				"          Vehicle_key = Entry_Number) ~> Transformation"
+				"          Vehicle_key = Entry_Number) ~> Transformation",
+				"Transformation select(mapColumn(",
+				"          Entry_Number,",
+				"          Date,",
+				"          Make_or_Body_Type,",
+				"          Model_Designation,",
+				"          Date_of_Manufacture,",
+				"          {Reg_No.},",
+				"          Odometer_Reading,",
+				"          {Engine_No.},",
+				"          {VIN_or_Chasis_No.},",
+				"          Name_of_Person,",
+				"          Address,",
+				"          {Lic_or_Id_or_ABN_No.},",
+				"          Date_Of_Birth,",
+				"          Bank_Name,",
+				"          BSB_Acc,",
+				"          Amount",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> AllDataColumnsCSV",
+				"AllDataColumnsCSV sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['allColumnsCSV'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sinkAllDataCSV"
 			]
 		}
 	}
