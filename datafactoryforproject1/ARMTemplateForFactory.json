@@ -61,7 +61,10 @@
 								"parameters": {},
 								"datasetParameters": {
 									"InputFromCSV": {},
-									"sinkAllDataCSV": {}
+									"sinkAllDataCSV": {},
+									"clientDimCsvSink": {},
+									"VehicleDimCSVsink": {},
+									"DateDimSinkcsv": {}
 								}
 							},
 							"staging": {},
@@ -271,54 +274,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/project1')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "derivedcolumndemo",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "derivedcolumndemo",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {},
-									"sink2": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/derivedcolumndemo')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -405,6 +360,60 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText11')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ProjectBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ProjectBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText12')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ProjectBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ProjectBlobStorage1')]"
 			]
 		},
 		{
@@ -639,6 +648,33 @@
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText8')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ProjectBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ProjectBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText9')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1004,6 +1040,27 @@
 								"type": "DatasetReference"
 							},
 							"name": "sinkAllDataCSV"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText9",
+								"type": "DatasetReference"
+							},
+							"name": "clientDimCsvSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText11",
+								"type": "DatasetReference"
+							},
+							"name": "VehicleDimCSVsink"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText12",
+								"type": "DatasetReference"
+							},
+							"name": "DateDimSinkcsv"
 						}
 					],
 					"transformations": [
@@ -1012,6 +1069,21 @@
 						},
 						{
 							"name": "AllDataColumnsCSV"
+						},
+						{
+							"name": "clientDim"
+						},
+						{
+							"name": "VehicleDim"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "DateDim"
+						},
+						{
+							"name": "derivedColumn2"
 						}
 					],
 					"scriptLines": [
@@ -1038,7 +1110,7 @@
 						"     ignoreNoFilesFound: false) ~> InputFromCSV",
 						"InputFromCSV derive(Amount = iifNull(Amount, \"974.8\", Amount),",
 						"          {Lic_or_Id_or_ABN_No.} = iifNull({Lic_or_Id_or_ABN_No.}, \"unknown_0\", {Lic_or_Id_or_ABN_No.}),",
-						"          client_key = iifNull(Name_of_Person, \"unknown\", Name_of_Person) +\" \"+ {Lic_or_Id_or_ABN_No.},",
+						"          client_key = Name_of_Person +\" \"+ {Lic_or_Id_or_ABN_No.},",
 						"          Date = iifNull(Date, \"03/01/2020\", Date),",
 						"          Date_of_Manufacture = iifNull(Date_of_Manufacture, \"20\", Date_of_Manufacture),",
 						"          Date_key = Date_of_Manufacture + \" \" + Date,",
@@ -1063,18 +1135,67 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> AllDataColumnsCSV",
+						"Transformation select(mapColumn(",
+						"          Name_of_Person,",
+						"          Address,",
+						"          {Lic_or_Id_or_ABN_No.},",
+						"          Date_Of_Birth,",
+						"          client_key",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> clientDim",
+						"Transformation select(mapColumn(",
+						"          Entry_Number,",
+						"          Make_or_Body_Type,",
+						"          Model_Designation,",
+						"          {Engine_No.},",
+						"          {VIN_or_Chasis_No.},",
+						"          Vehicle_key",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> VehicleDim",
+						"clientDim derive(client_key = iifNull(client_key, \"unknown123456\", client_key)) ~> derivedColumn1",
+						"Transformation select(mapColumn(",
+						"          Date,",
+						"          Date_of_Manufacture,",
+						"          Date_key",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DateDim",
+						"DateDim derive(Date_key = iifNull(Date_key, \"unknown_date\" ,Date_key)) ~> derivedColumn2",
 						"AllDataColumnsCSV sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     partitionFileNames:['allColumnsCSV.csv'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sinkAllDataCSV"
+						"     partitionBy('hash', 1)) ~> sinkAllDataCSV",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['clientDim.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> clientDimCsvSink",
+						"VehicleDim sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['VehicleDim.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> VehicleDimCSVsink",
+						"derivedColumn2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['DateDim.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> DateDimSinkcsv"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DelimitedText7')]",
-				"[concat(variables('factoryId'), '/datasets/DelimitedText8')]"
+				"[concat(variables('factoryId'), '/datasets/DelimitedText8')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText9')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText11')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText12')]"
 			]
 		}
 	]

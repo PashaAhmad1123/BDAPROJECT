@@ -13,13 +13,289 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/project1')]",
+			"name": "[concat(parameters('factoryName'), '/derivedcolumndemo')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText2",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText3",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "select2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Entry_Number as string,",
+						"          Date as string,",
+						"          {Make } as string,",
+						"          BodyType as string,",
+						"          ModelDesignation as string,",
+						"          DateofManufacture as string,",
+						"          {EngineNo.} as string,",
+						"          VIN as string,",
+						"          NameofPerson as string,",
+						"          Address as string,",
+						"          Lic as string,",
+						"          DateOfBirth as string,",
+						"          BankName as string,",
+						"          BSBAcc as string,",
+						"          Amount as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> source1",
+						"source1 derive(Amount = iifNull(Amount, \"600\", Amount)) ~> derivedColumn1",
+						"derivedColumn1 select(mapColumn(",
+						"          Entry_Number,",
+						"          BSBAcc,",
+						"          Amount",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"derivedColumn1 select(mapColumn(",
+						"          Entry_Number,",
+						"          Date,",
+						"          {Make },",
+						"          BodyType,",
+						"          ModelDesignation,",
+						"          DateofManufacture,",
+						"          {EngineNo.},",
+						"          VIN",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['derivedColumn.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1",
+						"select2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['8columns.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink2"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/inputData')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText7",
+								"type": "DatasetReference"
+							},
+							"name": "InputFromCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText8",
+								"type": "DatasetReference"
+							},
+							"name": "sinkAllDataCSV"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText9",
+								"type": "DatasetReference"
+							},
+							"name": "clientDimCsvSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText11",
+								"type": "DatasetReference"
+							},
+							"name": "VehicleDimCSVsink"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText12",
+								"type": "DatasetReference"
+							},
+							"name": "DateDimSinkcsv"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Transformation"
+						},
+						{
+							"name": "AllDataColumnsCSV"
+						},
+						{
+							"name": "clientDim"
+						},
+						{
+							"name": "VehicleDim"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "DateDim"
+						},
+						{
+							"name": "derivedColumn2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Entry_Number as string,",
+						"          Date as string,",
+						"          Make_or_Body_Type as string,",
+						"          Model_Designation as string,",
+						"          Date_of_Manufacture as string,",
+						"          {Reg_No.} as string,",
+						"          Odometer_Reading as string,",
+						"          {Engine_No.} as string,",
+						"          {VIN_or_Chasis_No.} as string,",
+						"          Name_of_Person as string,",
+						"          Address as string,",
+						"          {Lic_or_Id_or_ABN_No.} as string,",
+						"          Date_Of_Birth as string,",
+						"          Bank_Name as string,",
+						"          BSB_Acc as string,",
+						"          Amount as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> InputFromCSV",
+						"InputFromCSV derive(Amount = iifNull(Amount, \"974.8\", Amount),",
+						"          {Lic_or_Id_or_ABN_No.} = iifNull({Lic_or_Id_or_ABN_No.}, \"unknown_0\", {Lic_or_Id_or_ABN_No.}),",
+						"          client_key = Name_of_Person +\" \"+ {Lic_or_Id_or_ABN_No.},",
+						"          Date = iifNull(Date, \"03/01/2020\", Date),",
+						"          Date_of_Manufacture = iifNull(Date_of_Manufacture, \"20\", Date_of_Manufacture),",
+						"          Date_key = Date_of_Manufacture + \" \" + Date,",
+						"          Vehicle_key = Entry_Number) ~> Transformation",
+						"Transformation select(mapColumn(",
+						"          Entry_Number,",
+						"          Date,",
+						"          Make_or_Body_Type,",
+						"          Model_Designation,",
+						"          Date_of_Manufacture,",
+						"          {Reg_No.},",
+						"          Odometer_Reading,",
+						"          {Engine_No.},",
+						"          {VIN_or_Chasis_No.},",
+						"          Name_of_Person,",
+						"          Address,",
+						"          {Lic_or_Id_or_ABN_No.},",
+						"          Date_Of_Birth,",
+						"          Bank_Name,",
+						"          BSB_Acc,",
+						"          Amount",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> AllDataColumnsCSV",
+						"Transformation select(mapColumn(",
+						"          Name_of_Person,",
+						"          Address,",
+						"          {Lic_or_Id_or_ABN_No.},",
+						"          Date_Of_Birth,",
+						"          client_key",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> clientDim",
+						"Transformation select(mapColumn(",
+						"          Entry_Number,",
+						"          Make_or_Body_Type,",
+						"          Model_Designation,",
+						"          {Engine_No.},",
+						"          {VIN_or_Chasis_No.},",
+						"          Vehicle_key",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> VehicleDim",
+						"clientDim derive(client_key = iifNull(client_key, \"unknown123456\", client_key)) ~> derivedColumn1",
+						"Transformation select(mapColumn(",
+						"          Date,",
+						"          Date_of_Manufacture,",
+						"          Date_key",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> DateDim",
+						"DateDim derive(Date_key = iifNull(Date_key, \"unknown_date\" ,Date_key)) ~> derivedColumn2",
+						"AllDataColumnsCSV sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['allColumnsCSV.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sinkAllDataCSV",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['clientDim.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> clientDimCsvSink",
+						"VehicleDim sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['VehicleDim.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> VehicleDimCSVsink",
+						"derivedColumn2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['DateDim.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> DateDimSinkcsv"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BdaProjectPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "derivedcolumndemo",
+						"name": "inputData",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -32,13 +308,15 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "derivedcolumndemo",
+								"referenceName": "inputData",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"source1": {},
-									"sink1": {},
-									"sink2": {}
+									"InputFromCSV": {},
+									"sinkAllDataCSV": {},
+									"clientDimCsvSink": {},
+									"VehicleDimCSVsink": {},
+									"DateDimSinkcsv": {}
 								}
 							},
 							"staging": {},
@@ -56,7 +334,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/inputData')]"
+			]
 		}
 	]
 }
