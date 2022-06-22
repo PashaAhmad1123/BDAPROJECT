@@ -1,0 +1,96 @@
+{
+	"name": "derivedcolumndemo",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DelimitedText3",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Entry_Number as string,",
+				"          Date as string,",
+				"          {Make } as string,",
+				"          BodyType as string,",
+				"          ModelDesignation as string,",
+				"          DateofManufacture as string,",
+				"          {EngineNo.} as string,",
+				"          VIN as string,",
+				"          NameofPerson as string,",
+				"          Address as string,",
+				"          Lic as string,",
+				"          DateOfBirth as string,",
+				"          BankName as string,",
+				"          BSBAcc as string,",
+				"          Amount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(Amount = iifNull(Amount, \"600\", Amount)) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          Entry_Number,",
+				"          BSBAcc,",
+				"          Amount",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"derivedColumn1 select(mapColumn(",
+				"          Entry_Number,",
+				"          Date,",
+				"          {Make },",
+				"          BodyType,",
+				"          ModelDesignation,",
+				"          DateofManufacture,",
+				"          {EngineNo.},",
+				"          VIN",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['derivedColumn.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['8columns.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
+			]
+		}
+	}
+}

@@ -1,0 +1,84 @@
+{
+	"name": "DelimitedText1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "data_project.csv",
+				"container": "synapseprojectfilesystem"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Entry_Number",
+				"type": "String"
+			},
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Make ",
+				"type": "String"
+			},
+			{
+				"name": "BodyType",
+				"type": "String"
+			},
+			{
+				"name": "ModelDesignation",
+				"type": "String"
+			},
+			{
+				"name": "DateofManufacture",
+				"type": "String"
+			},
+			{
+				"name": "EngineNo.",
+				"type": "String"
+			},
+			{
+				"name": "VIN",
+				"type": "String"
+			},
+			{
+				"name": "NameofPerson",
+				"type": "String"
+			},
+			{
+				"name": "Address",
+				"type": "String"
+			},
+			{
+				"name": "Lic",
+				"type": "String"
+			},
+			{
+				"name": "DateOfBirth",
+				"type": "String"
+			},
+			{
+				"name": "BankName",
+				"type": "String"
+			},
+			{
+				"name": "BSBAcc",
+				"type": "String"
+			},
+			{
+				"name": "Amount",
+				"type": "String"
+			}
+		]
+	}
+}
