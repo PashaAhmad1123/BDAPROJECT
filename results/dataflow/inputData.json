@@ -19,6 +19,20 @@
 						"type": "DatasetReference"
 					},
 					"name": "sinkAllDataCSV"
+				},
+				{
+					"dataset": {
+						"referenceName": "DelimitedText9",
+						"type": "DatasetReference"
+					},
+					"name": "clientDimCsvSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DelimitedText11",
+						"type": "DatasetReference"
+					},
+					"name": "VehicleDimCSVsink"
 				}
 			],
 			"transformations": [
@@ -27,6 +41,12 @@
 				},
 				{
 					"name": "AllDataColumnsCSV"
+				},
+				{
+					"name": "clientDim"
+				},
+				{
+					"name": "VehicleDim"
 				}
 			],
 			"scriptLines": [
@@ -78,12 +98,43 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> AllDataColumnsCSV",
+				"Transformation select(mapColumn(",
+				"          Name_of_Person,",
+				"          Address,",
+				"          {Lic_or_Id_or_ABN_No.},",
+				"          Date_Of_Birth,",
+				"          client_key",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> clientDim",
+				"Transformation select(mapColumn(",
+				"          Entry_Number,",
+				"          Make_or_Body_Type,",
+				"          Model_Designation,",
+				"          {Engine_No.},",
+				"          {VIN_or_Chasis_No.},",
+				"          Vehicle_key",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> VehicleDim",
 				"AllDataColumnsCSV sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['allColumnsCSV.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> sinkAllDataCSV"
+				"     partitionBy('hash', 1)) ~> sinkAllDataCSV",
+				"clientDim sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['clientDim.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> clientDimCsvSink",
+				"VehicleDim sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['VehicleDim.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> VehicleDimCSVsink"
 			]
 		}
 	}
