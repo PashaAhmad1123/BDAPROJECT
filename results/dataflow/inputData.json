@@ -47,6 +47,9 @@
 				},
 				{
 					"name": "VehicleDim"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -73,7 +76,7 @@
 				"     ignoreNoFilesFound: false) ~> InputFromCSV",
 				"InputFromCSV derive(Amount = iifNull(Amount, \"974.8\", Amount),",
 				"          {Lic_or_Id_or_ABN_No.} = iifNull({Lic_or_Id_or_ABN_No.}, \"unknown_0\", {Lic_or_Id_or_ABN_No.}),",
-				"          client_key = iifNull(Name_of_Person, \"unknown\", Name_of_Person) +\" \"+ {Lic_or_Id_or_ABN_No.},",
+				"          client_key = Name_of_Person +\" \"+ {Lic_or_Id_or_ABN_No.},",
 				"          Date = iifNull(Date, \"03/01/2020\", Date),",
 				"          Date_of_Manufacture = iifNull(Date_of_Manufacture, \"20\", Date_of_Manufacture),",
 				"          Date_key = Date_of_Manufacture + \" \" + Date,",
@@ -117,13 +120,14 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> VehicleDim",
+				"clientDim derive(client_key = iifNull(client_key, \"unknown123456\", client_key)) ~> derivedColumn1",
 				"AllDataColumnsCSV sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['allColumnsCSV.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> sinkAllDataCSV",
-				"clientDim sink(allowSchemaDrift: true,",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['clientDim.csv'],",
 				"     skipDuplicateMapInputs: true,",
