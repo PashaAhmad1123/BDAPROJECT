@@ -73,6 +73,9 @@
 				},
 				{
 					"name": "FactTable"
+				},
+				{
+					"name": "convFloatToInt"
 				}
 			],
 			"scriptLines": [
@@ -161,6 +164,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> FactTable",
+				"FactTable derive(Amount = toInteger(Amount)) ~> convFloatToInt",
 				"AllDataColumnsCSV sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['allColumnsCSV.csv'],",
@@ -185,7 +189,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> DateDimSinkcsv",
-				"FactTable sink(allowSchemaDrift: true,",
+				"convFloatToInt sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['FactTable.csv'],",
 				"     skipDuplicateMapInputs: true,",
