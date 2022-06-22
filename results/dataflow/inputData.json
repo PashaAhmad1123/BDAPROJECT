@@ -40,6 +40,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "DateDimSinkcsv"
+				},
+				{
+					"dataset": {
+						"referenceName": "DelimitedText13",
+						"type": "DatasetReference"
+					},
+					"name": "factTablesink"
 				}
 			],
 			"transformations": [
@@ -63,6 +70,9 @@
 				},
 				{
 					"name": "derivedColumn2"
+				},
+				{
+					"name": "FactTable"
 				}
 			],
 			"scriptLines": [
@@ -142,6 +152,15 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> DateDim",
 				"DateDim derive(Date_key = iifNull(Date_key, \"unknown_date\" ,Date_key)) ~> derivedColumn2",
+				"Transformation select(mapColumn(",
+				"          BSB_Acc,",
+				"          Amount,",
+				"          client_key,",
+				"          Date_key,",
+				"          Vehicle_key",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FactTable",
 				"AllDataColumnsCSV sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['allColumnsCSV.csv'],",
@@ -165,7 +184,13 @@
 				"     partitionFileNames:['DateDim.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> DateDimSinkcsv"
+				"     partitionBy('hash', 1)) ~> DateDimSinkcsv",
+				"FactTable sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['FactTable.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> factTablesink"
 			]
 		}
 	}
