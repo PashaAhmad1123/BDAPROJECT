@@ -5,6 +5,18 @@
 		"factoryName": {
 			"value": "datafactoryforproject1"
 		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage2_connectionString": {
+			"value": ""
+		},
+		"ProjectBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"blobyoutube2_connectionString": {
+			"value": ""
+		},
 		"inputblob_connectionString": {
 			"value": ""
 		},
